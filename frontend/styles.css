@@ -14,12 +14,12 @@
     --color-accent-5: #E69780;
     --color-accent-6: #6F68BD;
     
-    /* Glass Effects */
-    --glass-bg: rgba(249, 249, 249, 0.25);
-    --glass-bg-dark: rgba(33, 29, 73, 0.15);
+    /* Glass Effects - Updated for dark background */
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-bg-dark: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.2);
-    --glass-shadow: 0 8px 32px rgba(33, 29, 73, 0.1);
-    --glass-shadow-hover: 0 12px 48px rgba(33, 29, 73, 0.15);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --glass-shadow-hover: 0 12px 48px rgba(141, 94, 183, 0.3);
     
     /* Typography */
     --font-primary: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -70,13 +70,8 @@ body {
     font-family: var(--font-primary);
     font-size: var(--text-base);
     line-height: 1.6;
-    color: var(--color-primary);
-    background: linear-gradient(135deg, 
-        var(--color-accent-2) 0%, 
-        var(--color-secondary) 25%, 
-        var(--color-accent-6) 50%, 
-        var(--color-accent-1) 100%
-    );
+    color: var(--color-secondary); /* Light text on dark bg */
+    background: var(--color-primary); /* Solid dark background #211D49 */
     min-height: 100vh;
     overflow-x: hidden;
 }
@@ -114,11 +109,11 @@ body {
 
 .header-content {
     backdrop-filter: blur(20px);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-2xl);
-    box-shadow: var(--glass-shadow);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .app-title {
@@ -142,7 +137,7 @@ body {
 
 .app-subtitle {
     font-size: var(--text-lg);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary);
     font-weight: 400;
     max-width: 600px;
     margin: 0 auto;
@@ -155,11 +150,11 @@ body {
 
 .input-card {
     backdrop-filter: blur(20px);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
     padding: var(--space-2xl);
-    box-shadow: var(--glass-shadow);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     transition: var(--transition);
 }
 
@@ -176,7 +171,7 @@ body {
     display: block;
     font-weight: 600;
     font-size: var(--text-sm);
-    color: var(--color-primary);
+    color: var(--color-secondary);
     margin-bottom: var(--space-sm);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -193,7 +188,7 @@ body {
     padding: var(--space-md) var(--space-lg);
     border: 2px solid transparent;
     border-radius: var(--border-radius);
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     font-family: var(--font-mono);
     font-size: var(--text-sm);
@@ -210,7 +205,7 @@ body {
 
 .form-input::placeholder {
     color: var(--color-tertiary);
-    opacity: 0.7;
+    opacity: 0.9; /* More visible placeholder */
 }
 
 /* Buttons */
@@ -295,7 +290,7 @@ body {
 
 .help-label {
     font-size: var(--text-xs);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary); /* Lighter gray */
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -325,11 +320,11 @@ body {
 
 .loading-card {
     backdrop-filter: blur(20px);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
     padding: var(--space-2xl);
-    box-shadow: var(--glass-shadow);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
 
@@ -351,12 +346,12 @@ body {
 .loading-title {
     font-size: var(--text-xl);
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--color-secondary);
     margin-bottom: var(--space-sm);
 }
 
 .loading-message {
-    color: var(--color-tertiary);
+    color: var(--color-quaternary);
     margin-bottom: var(--space-xl);
 }
 
@@ -390,8 +385,8 @@ body {
 
 .step {
     font-size: var(--text-xs);
-    color: var(--color-tertiary);
-    opacity: 0.5;
+    color: var(--color-quaternary); /* Lighter gray */
+    opacity: 0.7;
     transition: var(--transition);
 }
 
@@ -430,7 +425,7 @@ body {
 }
 
 .error-message {
-    color: var(--color-tertiary);
+    color: var(--color-quaternary); /* Lighter gray */
     margin-bottom: var(--space-lg);
 }
 
@@ -450,7 +445,7 @@ body {
 .repo-info h2 {
     font-size: var(--text-2xl);
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--color-secondary);
     margin-bottom: var(--space-sm);
 }
 
@@ -472,7 +467,7 @@ body {
 
 .analysis-time {
     font-size: var(--text-sm);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary); /* Lighter gray */
 }
 
 /* Analysis Grid */
@@ -485,11 +480,11 @@ body {
 
 .analysis-card {
     backdrop-filter: blur(20px);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
     overflow: hidden;
-    box-shadow: var(--glass-shadow);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     transition: var(--transition);
 }
 
@@ -507,7 +502,7 @@ body {
 .card-title {
     font-size: var(--text-lg);
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--color-secondary);
     display: flex;
     align-items: center;
     gap: var(--space-sm);
@@ -536,12 +531,12 @@ body {
 
 .data-label {
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--color-accent-3); /* Orange for better readability */
     font-size: var(--text-sm);
 }
 
 .data-value {
-    color: var(--color-tertiary);
+    color: var(--color-secondary); /* White for values */
     font-family: var(--font-mono);
     font-size: var(--text-sm);
 }
@@ -553,7 +548,7 @@ body {
 
 .data-list li {
     padding: var(--space-xs) 0;
-    color: var(--color-tertiary);
+    color: var(--color-secondary); /* White for better readability */
     font-size: var(--text-sm);
 }
 
@@ -586,7 +581,7 @@ body {
     padding: var(--space-lg);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary); /* Lighter gray for better readability */
     overflow-x: auto;
     line-height: 1.5;
 }
@@ -607,7 +602,7 @@ body {
 }
 
 .footer-text {
-    color: var(--color-tertiary);
+    color: var(--color-quaternary); /* Lighter gray */
     font-size: var(--text-sm);
 }
 
@@ -621,7 +616,7 @@ body {
     align-items: center;
     gap: var(--space-sm);
     font-size: var(--text-sm);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary); /* Lighter gray */
 }
 
 .footer-separator {
@@ -702,11 +697,11 @@ body {
 .chat-section {
     margin-top: var(--space-2xl);
     padding: var(--space-xl);
-    background: var(--glass-bg);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
-    box-shadow: var(--glass-shadow);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .chat-header {
@@ -722,7 +717,7 @@ body {
     margin: 0 0 var(--space-sm) 0;
     font-size: var(--text-xl);
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--color-secondary);
 }
 
 .chat-icon {
@@ -732,21 +727,21 @@ body {
 .chat-subtitle {
     margin: 0;
     font-size: var(--text-base);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary);
 }
 
 .chat-config {
     margin-bottom: var(--space-xl);
     padding: var(--space-lg);
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-sm);
 }
 
 .help-text {
     margin: var(--space-sm) 0 0 0;
     font-size: var(--text-sm);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary);
 }
 
 .help-text a {
@@ -776,7 +771,7 @@ body {
     margin: 0;
     font-size: var(--text-lg);
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--color-secondary);
 }
 
 .btn-sm {
@@ -791,10 +786,10 @@ body {
 
 .suggestion-btn {
     padding: var(--space-md);
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-sm);
-    color: var(--color-primary);
+    color: var(--color-secondary);
     font-family: var(--font-primary);
     font-size: var(--text-sm);
     font-weight: 500;
@@ -846,8 +841,8 @@ body {
     overflow-y: auto;
     padding: var(--space-md);
     margin-bottom: var(--space-md);
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-sm);
     display: flex;
     flex-direction: column;
@@ -907,7 +902,7 @@ body {
 .chat-textarea {
     flex: 1;
     padding: var(--space-md);
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--border-radius-sm);
     color: var(--color-primary);
@@ -928,7 +923,7 @@ body {
 }
 
 .chat-textarea::placeholder {
-    color: rgba(89, 89, 89, 0.7);
+    color: rgba(89, 89, 89, 0.9); /* More visible placeholder */
 }
 
 .btn-chat {
@@ -944,7 +939,7 @@ body {
     justify-content: center;
     gap: var(--space-md);
     padding: var(--space-xl);
-    color: var(--color-tertiary);
+    color: var(--color-quaternary); /* Lighter gray */
 }
 
 .chat-loading .loading-spinner {
