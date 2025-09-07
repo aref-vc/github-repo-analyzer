@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Visualizations</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            background: #211D49;
+            color: white;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 400px;
+            height: 400px;
+            margin: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Testing Visualizations</h1>
+    
+    <div class="chart-container">
+        <canvas id="testChart"></canvas>
+    </div>
+
+    <script>
+        // Test if Chart.js is loaded
+        console.log('Chart.js loaded:', typeof Chart !== 'undefined');
+        console.log('D3.js loaded:', typeof d3 !== 'undefined');
+
+        // Create a simple test chart
+        if (typeof Chart !== 'undefined') {
+            const ctx = document.getElementById('testChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Python', 'JavaScript', 'HTML', 'CSS'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: [
+                            '#8D5EB7',
+                            '#6F68BD',
+                            '#E56C48',
+                            '#E69780'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            console.log('Chart created successfully!');
+        } else {
+            console.error('Chart.js not loaded!');
+        }
+    </script>
+
+    <script src="frontend/visualizations.js"></script>
+    <script>
+        // Test if VisualizationSuite is loaded
+        console.log('VisualizationSuite loaded:', typeof VisualizationSuite !== 'undefined');
+        
+        if (typeof VisualizationSuite !== 'undefined') {
+            const viz = new VisualizationSuite();
+            console.log('VisualizationSuite instance created:', viz);
+        }
+    </script>
+</body>
+</html>

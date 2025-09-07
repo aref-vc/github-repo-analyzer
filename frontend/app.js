@@ -41,6 +41,43 @@ class RepositoryAnalyzer {
             // Allow paste processing then validate
             setTimeout(() => this.validateInput(), 10);
         });
+
+        // Tab navigation
+        this.initializeTabNavigation();
+    }
+
+    /**
+     * Initialize tab navigation functionality
+     */
+    initializeTabNavigation() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+
+                // Remove active class from all buttons and panels
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanels.forEach(panel => panel.classList.remove('active'));
+
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                // Show corresponding panel
+                if (targetTab === 'analysis') {
+                    document.getElementById('analysisTab').classList.add('active');
+                } else if (targetTab === 'visualizations') {
+                    document.getElementById('visualizationsTab').classList.add('active');
+                    // Trigger visualization render if needed
+                    if (this.visualizations && !this.visualizationsRendered) {
+                        this.renderVisualizationsInTab();
+                    }
+                } else if (targetTab === 'chat') {
+                    document.getElementById('chatTab').classList.add('active');
+                }
+            });
+        });
     }
 
     /**
@@ -246,7 +283,9 @@ class RepositoryAnalyzer {
         // Initialize visualizations
         if (typeof VisualizationSuite !== 'undefined') {
             this.visualizations = new VisualizationSuite();
-            this.initializeVisualizations(analysis);
+            this.currentAnalysisData = analysis;
+            this.visualizationsRendered = false;
+            // Don't render immediately - wait for user to click visualizations tab
         }
 
         // Setup raw data
@@ -264,58 +303,21 @@ class RepositoryAnalyzer {
     }
 
     /**
+     * Render visualizations in the tab
+     */
+    renderVisualizationsInTab() {
+        if (this.visualizations && this.currentAnalysisData) {
+            this.visualizations.initializeVisualizations(this.currentAnalysisData);
+            this.visualizationsRendered = true;
+        }
+    }
+
+    /**
      * Extract repository name from URL
      */
     extractRepoName(url) {
         const match = url.match(/github\.com\/([^\/]+\/[^\/]+)/);
         return match ? match[1] : 'Repository';
-    }
-
-    /**
-     * Initialize all visualizations
-     */
-    initializeVisualizations(analysis) {
-        // Language distribution chart
-        const langContainer = document.createElement('div');
-        langContainer.className = 'visualization-container';
-        langContainer.innerHTML = '<canvas id="languageChart"></canvas>';
-        document.getElementById('metadataContent').appendChild(langContainer);
-        this.visualizations.createLanguageDistributionChart(analysis.repository_metadata);
-
-        // Contribution timeline
-        const timelineContainer = document.createElement('div');
-        timelineContainer.className = 'visualization-container';
-        timelineContainer.innerHTML = '<canvas id="contributionTimeline"></canvas>';
-        document.getElementById('activityContent').appendChild(timelineContainer);
-        this.visualizations.createContributionTimeline(analysis.development_activity);
-
-        // Activity calendar
-        const calendarContainer = document.createElement('div');
-        calendarContainer.className = 'visualization-container';
-        calendarContainer.id = 'activityCalendar';
-        document.getElementById('activityContent').appendChild(calendarContainer);
-        this.visualizations.createActivityCalendar(analysis.development_activity);
-
-        // File size treemap
-        const treemapContainer = document.createElement('div');
-        treemapContainer.className = 'visualization-container';
-        treemapContainer.id = 'fileSizeTreemap';
-        document.getElementById('architectureContent').appendChild(treemapContainer);
-        this.visualizations.createFileSizeTreemap(analysis.architecture_synopsis);
-
-        // Dependency graph
-        const depGraphContainer = document.createElement('div');
-        depGraphContainer.className = 'visualization-container';
-        depGraphContainer.id = 'dependencyGraph';
-        document.getElementById('architectureContent').appendChild(depGraphContainer);
-        this.visualizations.createDependencyGraph(analysis.architecture_synopsis);
-
-        // Code complexity heatmap
-        const heatmapContainer = document.createElement('div');
-        heatmapContainer.className = 'visualization-container';
-        heatmapContainer.id = 'complexityHeatmap';
-        document.getElementById('debtContent').appendChild(heatmapContainer);
-        this.visualizations.createCodeComplexityHeatmap(analysis.technical_debt_assessment);
     }
 
     /**

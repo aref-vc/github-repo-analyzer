@@ -131,8 +131,28 @@
                 </button>
             </div>
 
-            <!-- Analysis Results Grid -->
-            <div class="analysis-grid">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-button active" data-tab="analysis">
+                    <span class="tab-icon">📊</span>
+                    <span class="tab-text">Analysis</span>
+                </button>
+                <button class="tab-button" data-tab="visualizations">
+                    <span class="tab-icon">📈</span>
+                    <span class="tab-text">Visualizations</span>
+                </button>
+                <button class="tab-button" data-tab="chat">
+                    <span class="tab-icon">💬</span>
+                    <span class="tab-text">AI Assistant</span>
+                </button>
+            </div>
+
+            <!-- Tab Panels -->
+            <div class="tab-content">
+                <!-- Analysis Tab -->
+                <div class="tab-panel active" id="analysisTab">
+                    <!-- Analysis Results Grid -->
+                    <div class="analysis-grid">
                 <!-- Repository Metadata -->
                 <div class="analysis-card">
                     <div class="card-header">
@@ -212,8 +232,8 @@
                 </div>
             </div>
 
-            <!-- Export and Raw Data Section -->
-            <div class="raw-data-section">
+                    <!-- Export and Raw Data Section -->
+                    <div class="raw-data-section">
                 <div class="export-buttons" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
                     <button class="btn btn-secondary" onclick="app.exportAnalysis('json')">
                         <span class="btn-icon">📄</span>
@@ -236,9 +256,21 @@
                     <pre id="rawDataJson"></pre>
                 </div>
             </div>
+                </div>
+                <!-- End Analysis Tab -->
 
-            <!-- AI Chat Section -->
-            <div class="chat-section">
+                <!-- Visualizations Tab -->
+                <div class="tab-panel" id="visualizationsTab">
+                    <div id="visualizationsContainer">
+                        <!-- Visualizations will be dynamically inserted here -->
+                    </div>
+                </div>
+                <!-- End Visualizations Tab -->
+
+                <!-- Chat Tab -->
+                <div class="tab-panel" id="chatTab">
+                    <!-- AI Chat Section -->
+                    <div class="chat-section-inner">
                 <div class="chat-header">
                     <h3 class="chat-title">
                         <span class="chat-icon">🤖</span>
@@ -319,6 +351,10 @@
                     <span class="loading-text">AI is analyzing your question...</span>
                 </div>
             </div>
+                </div>
+                <!-- End Chat Tab -->
+            </div>
+            <!-- End Tab Content -->
         </section>
     </div>
 

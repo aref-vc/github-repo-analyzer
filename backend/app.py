@@ -98,6 +98,12 @@ async def serve_javascript():
     js_path = os.path.join(os.path.dirname(__file__), "../frontend/app.js")
     return FileResponse(js_path, media_type="application/javascript")
 
+@app.get("/visualizations.js")
+async def serve_visualizations():
+    """Serve Visualizations JavaScript file"""
+    js_path = os.path.join(os.path.dirname(__file__), "../frontend/visualizations.js")
+    return FileResponse(js_path, media_type="application/javascript")
+
 @app.get("/favicon.ico")
 async def serve_favicon():
     """Serve favicon or return empty response"""

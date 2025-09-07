@@ -114,11 +114,17 @@ class VisualizationSuite {
             </div>
         `;
         
-        // Insert after results section
-        const resultsSection = document.getElementById('resultsSection');
-        const vizContainer = document.createElement('div');
-        vizContainer.innerHTML = visualizationsHTML;
-        resultsSection.appendChild(vizContainer);
+        // Insert into visualizations tab
+        const vizTab = document.getElementById('visualizationsContainer');
+        if (vizTab) {
+            vizTab.innerHTML = visualizationsHTML;
+        } else {
+            // Fallback: Insert after results section
+            const resultsSection = document.getElementById('resultsSection');
+            const vizContainer = document.createElement('div');
+            vizContainer.innerHTML = visualizationsHTML;
+            resultsSection.appendChild(vizContainer);
+        }
     }
 
     /**

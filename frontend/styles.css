@@ -691,6 +691,87 @@ body {
 }
 
 /* =============================================
+   Tab Navigation Styles
+   ============================================= */
+
+.tab-navigation {
+    display: flex;
+    gap: var(--space-sm);
+    margin: var(--space-xl) 0;
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(10px);
+}
+
+.tab-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-sm);
+    color: var(--color-quaternary);
+    font-family: var(--font-primary);
+    font-size: var(--text-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tab-button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-secondary);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, var(--color-accent-1), var(--color-accent-6));
+    color: white;
+    border-color: var(--color-accent-1);
+    box-shadow: 0 4px 16px rgba(141, 94, 183, 0.3);
+}
+
+.tab-icon {
+    font-size: var(--text-lg);
+}
+
+.tab-text {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Tab Panels */
+.tab-content {
+    position: relative;
+    min-height: 400px;
+}
+
+.tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =============================================
    Chat Interface Styles
    ============================================= */
 
@@ -702,6 +783,13 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chat-section-inner {
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 .chat-header {
