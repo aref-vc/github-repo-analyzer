@@ -243,6 +243,12 @@ class RepositoryAnalyzer {
         this.populateActivity(analysis.development_activity);
         this.populateDebt(analysis.technical_debt_assessment);
 
+        // Initialize visualizations
+        if (typeof VisualizationSuite !== 'undefined') {
+            this.visualizations = new VisualizationSuite();
+            this.initializeVisualizations(analysis);
+        }
+
         // Setup raw data
         document.getElementById('rawDataJson').textContent = JSON.stringify(analysis, null, 2);
 
@@ -263,6 +269,53 @@ class RepositoryAnalyzer {
     extractRepoName(url) {
         const match = url.match(/github\.com\/([^\/]+\/[^\/]+)/);
         return match ? match[1] : 'Repository';
+    }
+
+    /**
+     * Initialize all visualizations
+     */
+    initializeVisualizations(analysis) {
+        // Language distribution chart
+        const langContainer = document.createElement('div');
+        langContainer.className = 'visualization-container';
+        langContainer.innerHTML = '<canvas id="languageChart"></canvas>';
+        document.getElementById('metadataContent').appendChild(langContainer);
+        this.visualizations.createLanguageDistributionChart(analysis.repository_metadata);
+
+        // Contribution timeline
+        const timelineContainer = document.createElement('div');
+        timelineContainer.className = 'visualization-container';
+        timelineContainer.innerHTML = '<canvas id="contributionTimeline"></canvas>';
+        document.getElementById('activityContent').appendChild(timelineContainer);
+        this.visualizations.createContributionTimeline(analysis.development_activity);
+
+        // Activity calendar
+        const calendarContainer = document.createElement('div');
+        calendarContainer.className = 'visualization-container';
+        calendarContainer.id = 'activityCalendar';
+        document.getElementById('activityContent').appendChild(calendarContainer);
+        this.visualizations.createActivityCalendar(analysis.development_activity);
+
+        // File size treemap
+        const treemapContainer = document.createElement('div');
+        treemapContainer.className = 'visualization-container';
+        treemapContainer.id = 'fileSizeTreemap';
+        document.getElementById('architectureContent').appendChild(treemapContainer);
+        this.visualizations.createFileSizeTreemap(analysis.architecture_synopsis);
+
+        // Dependency graph
+        const depGraphContainer = document.createElement('div');
+        depGraphContainer.className = 'visualization-container';
+        depGraphContainer.id = 'dependencyGraph';
+        document.getElementById('architectureContent').appendChild(depGraphContainer);
+        this.visualizations.createDependencyGraph(analysis.architecture_synopsis);
+
+        // Code complexity heatmap
+        const heatmapContainer = document.createElement('div');
+        heatmapContainer.className = 'visualization-container';
+        heatmapContainer.id = 'complexityHeatmap';
+        document.getElementById('debtContent').appendChild(heatmapContainer);
+        this.visualizations.createCodeComplexityHeatmap(analysis.technical_debt_assessment);
     }
 
     /**
