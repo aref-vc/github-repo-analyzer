@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repository Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Pattern -->
+    <div class="background-pattern"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="title-icon">🔍</span>
+                    GitHub Repository Analyzer
+                </h1>
+                <p class="app-subtitle">
+                    Analyze any GitHub repository and get comprehensive intelligence with AI-powered insights
+                </p>
+            </div>
+        </header>
+
+        <!-- Analysis Input Section -->
+        <section class="analysis-input">
+            <div class="input-card">
+                <form id="analyzeForm" class="analyze-form">
+                    <div class="form-group">
+                        <label for="repoUrl" class="form-label">
+                            Repository URL
+                        </label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="url" 
+                                id="repoUrl" 
+                                name="repoUrl" 
+                                class="form-input" 
+                                placeholder="https://github.com/owner/repository"
+                                required
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+                            <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                                <span class="btn-icon">🚀</span>
+                                <span class="btn-text">Analyze Repository</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-help">
+                        <div class="help-examples">
+                            <span class="help-label">Examples:</span>
+                            <button type="button" class="example-btn" data-url="https://github.com/fastapi/fastapi">
+                                fastapi/fastapi
+                            </button>
+                            <button type="button" class="example-btn" data-url="https://github.com/microsoft/vscode">
+                                microsoft/vscode
+                            </button>
+                            <button type="button" class="example-btn" data-url="https://github.com/facebook/react">
+                                facebook/react
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section class="loading-section hidden" id="loadingSection">
+            <div class="loading-card">
+                <div class="loading-spinner"></div>
+                <h3 class="loading-title">Analyzing Repository</h3>
+                <p class="loading-message" id="loadingMessage">
+                    Fetching repository data and running comprehensive analysis...
+                </p>
+                <div class="loading-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps" id="progressSteps">
+                        <span class="step active">📡 Connecting</span>
+                        <span class="step">🔍 Analyzing</span>
+                        <span class="step">📊 Processing</span>
+                        <span class="step">✨ Complete</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error State -->
+        <section class="error-section hidden" id="errorSection">
+            <div class="error-card">
+                <div class="error-icon">⚠️</div>
+                <h3 class="error-title">Analysis Failed</h3>
+                <p class="error-message" id="errorMessage">
+                    Something went wrong during the analysis. Please try again.
+                </p>
+                <button class="btn btn-secondary" id="retryBtn">
+                    <span class="btn-icon">🔄</span>
+                    Try Again
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section hidden" id="resultsSection">
+            <div class="results-header">
+                <div class="repo-info">
+                    <h2 class="repo-title" id="repoTitle">Repository Analysis</h2>
+                    <div class="repo-meta">
+                        <span class="repo-url" id="repoUrlDisplay"></span>
+                        <span class="analysis-time" id="analysisTime"></span>
+                    </div>
+                </div>
+                <button class="btn btn-outline" id="newAnalysisBtn">
+                    <span class="btn-icon">➕</span>
+                    New Analysis
+                </button>
+            </div>
+
+            <!-- Analysis Results Grid -->
+            <div class="analysis-grid">
+                <!-- Repository Metadata -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">📊</span>
+                            Repository Metadata
+                        </h3>
+                    </div>
+                    <div class="card-content" id="metadataContent">
+                        <!-- Dynamic content will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Architecture Synopsis -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🏗️</span>
+                            Architecture Synopsis
+                        </h3>
+                    </div>
+                    <div class="card-content" id="architectureContent">
+                        <!-- Dynamic content will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Code Quality Metrics -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">✅</span>
+                            Code Quality Metrics
+                        </h3>
+                    </div>
+                    <div class="card-content" id="qualityContent">
+                        <!-- Dynamic content will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Documentation Extraction -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">📚</span>
+                            Documentation Analysis
+                        </h3>
+                    </div>
+                    <div class="card-content" id="documentationContent">
+                        <!-- Dynamic content will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Development Activity -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔄</span>
+                            Development Activity
+                        </h3>
+                    </div>
+                    <div class="card-content" id="activityContent">
+                        <!-- Dynamic content will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Technical Debt Assessment -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">⚡</span>
+                            Technical Debt Assessment
+                        </h3>
+                    </div>
+                    <div class="card-content" id="debtContent">
+                        <!-- Dynamic content will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export and Raw Data Section -->
+            <div class="raw-data-section">
+                <div class="export-buttons" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="app.exportAnalysis('json')">
+                        <span class="btn-icon">📄</span>
+                        <span class="btn-text">Export as JSON</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.exportAnalysis('csv')">
+                        <span class="btn-icon">📊</span>
+                        <span class="btn-text">Export as CSV</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.exportAnalysis('pdf')">
+                        <span class="btn-icon">📑</span>
+                        <span class="btn-text">Export as PDF</span>
+                    </button>
+                </div>
+                <button class="btn btn-ghost" id="toggleRawData">
+                    <span class="btn-icon">🔧</span>
+                    <span class="btn-text">View Raw Analysis Data</span>
+                </button>
+                <div class="raw-data-content hidden" id="rawDataContent">
+                    <pre id="rawDataJson"></pre>
+                </div>
+            </div>
+
+            <!-- AI Chat Section -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h3 class="chat-title">
+                        <span class="chat-icon">🤖</span>
+                        AI Repository Assistant
+                    </h3>
+                    <p class="chat-subtitle">Ask questions about this repository and get AI-powered insights</p>
+                </div>
+
+                <!-- Gemini API Key Input -->
+                <div class="chat-config" id="chatConfig">
+                    <div class="form-group">
+                        <label for="geminiApiKey" class="form-label">
+                            Gemini API Key
+                        </label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="password" 
+                                id="geminiApiKey" 
+                                class="form-input" 
+                                placeholder="Enter your Gemini API key to enable AI chat"
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-secondary" id="saveApiKeyBtn">
+                                <span class="btn-icon">💾</span>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-help">
+                        <p class="help-text">
+                            Get your free API key from <a href="https://ai.google.dev/" target="_blank" rel="noopener">Google AI Studio</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Suggested Questions -->
+                <div class="suggestions-section hidden" id="suggestionsSection">
+                    <div class="suggestions-header">
+                        <h4 class="suggestions-title">💡 Suggested Questions</h4>
+                        <button class="btn btn-ghost btn-sm" id="refreshSuggestions">
+                            <span class="btn-icon">🔄</span>
+                            Refresh
+                        </button>
+                    </div>
+                    <div class="suggestions-grid" id="suggestionsGrid">
+                        <!-- Suggested questions will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Chat Interface -->
+                <div class="chat-interface hidden" id="chatInterface">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Chat messages will be populated here -->
+                    </div>
+                    
+                    <div class="chat-input-section">
+                        <form id="chatForm" class="chat-form">
+                            <div class="chat-input-wrapper">
+                                <textarea 
+                                    id="chatInput" 
+                                    class="chat-textarea" 
+                                    placeholder="Ask about architecture, code quality, dependencies, or anything else..."
+                                    rows="3"
+                                    required
+                                ></textarea>
+                                <button type="submit" class="btn btn-primary btn-chat" id="sendChatBtn">
+                                    <span class="btn-icon">🚀</span>
+                                    <span class="btn-text">Ask AI</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Chat Loading State -->
+                <div class="chat-loading hidden" id="chatLoading">
+                    <div class="loading-spinner"></div>
+                    <span class="loading-text">AI is analyzing your question...</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">
+                Built with <span class="highlight">FastAPI</span> + <span class="highlight">Glassmorphism</span> 
+                • Powered by <span class="highlight">GitHub API</span>
+            </p>
+            <div class="footer-links">
+                <span class="footer-version">v1.0.0</span>
+                <span class="footer-separator">•</span>
+                <span class="footer-milestone">Milestone 5</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

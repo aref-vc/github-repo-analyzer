@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repository Analyzer - Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Pattern -->
+    <div class="background-pattern"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="title-icon">🔍</span>
+                    GitHub Repository Analyzer
+                </h1>
+                <p class="app-subtitle">
+                    Analyze any GitHub repository and get comprehensive intelligence with AI-powered insights
+                </p>
+                <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(141, 94, 183, 0.1); border-radius: 8px; font-size: 0.875rem; color: var(--color-accent-1);">
+                    🎨 Demo Mode - Showcasing UI Design & Analysis Framework
+                </div>
+            </div>
+        </header>
+
+        <!-- Results Section with Demo Data -->
+        <section class="results-section" id="resultsSection">
+            <div class="results-header">
+                <div class="repo-info">
+                    <h2 class="repo-title">fastapi/fastapi Analysis</h2>
+                    <div class="repo-meta">
+                        <span class="repo-url">https://github.com/fastapi/fastapi</span>
+                        <span class="analysis-time">December 7, 2024 at 1:25 PM</span>
+                    </div>
+                </div>
+                <button class="btn btn-outline" onclick="location.href='index.html'">
+                    <span class="btn-icon">➕</span>
+                    New Analysis
+                </button>
+            </div>
+
+            <!-- Analysis Results Grid -->
+            <div class="analysis-grid">
+                <!-- Repository Metadata -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">📊</span>
+                            Repository Metadata
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="data-item">
+                            <span class="data-label">Primary Language</span>
+                            <span class="data-value">Python</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Stars</span>
+                            <span class="data-value">89,204</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Forks</span>
+                            <span class="data-value">7,854</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Contributors</span>
+                            <span class="data-value">542</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Repository Size</span>
+                            <span class="data-value">2.1 MB</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">License</span>
+                            <span class="data-value">MIT License</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Created</span>
+                            <span class="data-value">May 5, 2018</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Last Updated</span>
+                            <span class="data-value">December 7, 2024</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Architecture Synopsis -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🏗️</span>
+                            Architecture Synopsis
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="data-item">
+                            <span class="data-label">Build System</span>
+                            <span class="data-value">Python/pip + Poetry</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Directory Structure</span>
+                            <span class="data-value">847 files in 156 directories</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Dependencies</span>
+                            <span class="data-value">42</span>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong class="data-label">Core Dependencies:</strong>
+                            <ul class="data-list">
+                                <li>pydantic</li>
+                                <li>starlette</li>
+                                <li>uvicorn</li>
+                                <li>typing-extensions</li>
+                                <li>python-multipart</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong class="data-label">Project Patterns:</strong>
+                            <ul class="data-list">
+                                <li>Python package structure</li>
+                                <li>Well-documented project</li>
+                                <li>Includes automated tests</li>
+                                <li>GitHub Actions CI/CD</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Quality Metrics -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">✅</span>
+                            Code Quality Metrics
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="data-item">
+                            <span class="data-label">Testing Framework</span>
+                            <span class="data-value">pytest</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">CI/CD Pipeline</span>
+                            <span class="data-value">Active</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Linting Standards</span>
+                            <span class="data-value">Black, isort, mypy</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Automation Scope</span>
+                            <span class="data-value">15 workflow runs found</span>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong class="data-label">Recent Workflows:</strong>
+                            <ul class="data-list">
+                                <li>Test: success</li>
+                                <li>Deploy docs: success</li>
+                                <li>Publish: success</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documentation Analysis -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">📚</span>
+                            Documentation Analysis
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="data-item">
+                            <span class="data-label">Documentation Quality</span>
+                            <span class="data-value">Comprehensive</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Has Documentation Folder</span>
+                            <span class="data-value">Yes</span>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong class="data-label">README Summary:</strong>
+                            <p style="margin-top: 0.5rem; color: var(--color-tertiary); font-size: var(--text-sm); line-height: 1.5;">
+                                FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.7+ based on standard Python type hints. The key features are: Fast, Fast to code, Fewer bugs, Intuitive, Easy, Short, Robust, Standards-based.
+                            </p>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong class="data-label">Installation:</strong>
+                            <ul class="data-list">
+                                <li>pip install fastapi</li>
+                                <li>pip install "uvicorn[standard]"</li>
+                                <li>Check documentation for detailed setup</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Development Activity -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔄</span>
+                            Development Activity
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="data-item">
+                            <span class="data-label">Development Consistency</span>
+                            <span class="data-value">Very active</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Recent Commits</span>
+                            <span class="data-value">30 commits in last 30</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Commit Frequency</span>
+                            <span class="data-value">2.3 per day</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Open Issues</span>
+                            <span class="data-value">124</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Open Pull Requests</span>
+                            <span class="data-value">18</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Contributor Activity</span>
+                            <span class="data-value">25 active contributors</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Project Velocity</span>
+                            <span class="data-value">High</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Debt Assessment -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">⚡</span>
+                            Technical Debt Assessment
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="data-item">
+                            <span class="data-label">Maintenance Burden</span>
+                            <span class="data-value">Repository age: 6.7 years</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Security Score</span>
+                            <span class="data-value">85/100</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Total Dependencies</span>
+                            <span class="data-value">42</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Scalability Score</span>
+                            <span class="data-value">92/100</span>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong class="data-label">Maintenance Indicators:</strong>
+                            <ul class="data-list">
+                                <li>Mature project (6.7 years old)</li>
+                                <li>Active community maintenance</li>
+                                <li>Regular security updates</li>
+                                <li>Well-maintained dependencies</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong class="data-label">Refactoring Priorities:</strong>
+                            <ul class="data-list">
+                                <li>Continue current development practices</li>
+                                <li>Monitor dependency updates</li>
+                                <li>Maintain test coverage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raw Data Toggle -->
+            <div class="raw-data-section">
+                <button class="btn btn-ghost" onclick="toggleDemo()">
+                    <span class="btn-icon">🔧</span>
+                    <span class="btn-text">View Raw Analysis Data</span>
+                </button>
+                <div class="raw-data-content hidden" id="rawDataContent">
+                    <pre>{
+  "repository_metadata": {
+    "primary_stack": "Python",
+    "stars": 89204,
+    "forks": 7854,
+    "contributors": 542,
+    "repository_size_kb": 2145,
+    "license_type": "MIT License"
+  },
+  "architecture_synopsis": {
+    "build_system": "Python/pip + Poetry",
+    "directory_structure": "847 files in 156 directories",
+    "dependency_count": 42
+  },
+  "code_quality_metrics": {
+    "testing_framework": "pytest",
+    "ci_cd_pipeline_status": "Active",
+    "linting_standards": "Black, isort, mypy"
+  },
+  "project_health_score": 94
+}</pre>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">
+                Built with <span class="highlight">FastAPI</span> + <span class="highlight">Glassmorphism</span> 
+                • Powered by <span class="highlight">GitHub API</span>
+            </p>
+            <div class="footer-links">
+                <span class="footer-version">v1.0.0</span>
+                <span class="footer-separator">•</span>
+                <span class="footer-milestone">Milestone 4 Demo</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleDemo() {
+            const rawDataContent = document.getElementById('rawDataContent');
+            const toggleBtn = event.target.closest('button');
+            
+            if (rawDataContent.classList.contains('hidden')) {
+                rawDataContent.classList.remove('hidden');
+                toggleBtn.querySelector('.btn-text').textContent = 'Hide Raw Analysis Data';
+                toggleBtn.querySelector('.btn-icon').textContent = '🔽';
+            } else {
+                rawDataContent.classList.add('hidden');
+                toggleBtn.querySelector('.btn-text').textContent = 'View Raw Analysis Data';
+                toggleBtn.querySelector('.btn-icon').textContent = '🔧';
+            }
+        }
+    </script>
+</body>
+</html>
