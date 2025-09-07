@@ -1,4 +1,21 @@
-# Python
+### SECURITY - NEVER COMMIT THESE ###
+# Environment variables with secrets
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# API Keys and Tokens
+*_token.txt
+*_key.txt
+secrets/
+credentials/
+*.pem
+*.key
+*.cert
+
+### Python ###
 __pycache__/
 *.py[cod]
 *$py.class
@@ -10,30 +27,53 @@ ENV/
 *.egg-info/
 dist/
 build/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# IDE
+### IDE ###
 .vscode/
 .idea/
 *.swp
 *.swo
+*.swn
 .DS_Store
+Thumbs.db
 
-# Cache
+### Cache & Logs ###
 backend/cache/
 *.cache
 *.log
+logs/
+*.pid
+*.seed
 
-# Testing
+### Testing ###
 .coverage
+.coverage.*
 htmlcov/
 .pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
 
-# Temporary files
+### Temporary files ###
 *.tmp
 *.bak
 *~
+.temp/
+tmp/
+
+### OS Files ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+### Backup files ###
+*.backup
+*.old
+*.orig
