@@ -871,9 +871,130 @@ body {
 .message-content {
     margin: 0;
     font-size: var(--text-sm);
-    line-height: 1.5;
-    white-space: pre-wrap;
+    line-height: 1.6;
     word-wrap: break-word;
+}
+
+/* Markdown styles in chat */
+.message-content p {
+    margin: 0 0 0.75rem 0;
+    line-height: 1.6;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+
+.message-content br {
+    display: block;
+    margin: 0.5rem 0;
+    content: "";
+}
+
+.message-content strong {
+    font-weight: 600;
+    color: inherit;
+}
+
+.message-content em {
+    font-style: italic;
+}
+
+.message-content code {
+    padding: 0.125rem 0.25rem;
+    background: rgba(141, 94, 183, 0.2);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+.message-content pre {
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius-sm);
+    overflow-x: auto;
+}
+
+.message-content pre code {
+    padding: 0;
+    background: transparent;
+    font-size: 0.875rem;
+}
+
+.message-content ul, .message-content ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.message-content li {
+    margin: 0.25rem 0;
+}
+
+.message-content h1, .message-content h2, .message-content h3 {
+    margin: 0.75rem 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.message-content h1 {
+    font-size: 1.25rem;
+}
+
+.message-content h2 {
+    font-size: 1.125rem;
+}
+
+.message-content h3 {
+    font-size: 1rem;
+    color: var(--color-accent-3);
+}
+
+/* Additional markdown elements */
+.message-content blockquote {
+    margin: 0.5rem 0;
+    padding: 0.5rem 1rem;
+    border-left: 3px solid var(--color-accent-1);
+    background: rgba(141, 94, 183, 0.1);
+    font-style: italic;
+}
+
+.message-content del {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.message-content a {
+    color: var(--color-accent-1);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.message-content a:hover {
+    border-bottom-color: var(--color-accent-1);
+}
+
+.message-content hr {
+    margin: 1rem 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.message-content ol {
+    counter-reset: item;
+    padding-left: 1.5rem;
+}
+
+.message-content ol li {
+    counter-increment: item;
+    display: block;
+}
+
+.message-content ol li:before {
+    content: counter(item) ". ";
+    color: var(--color-accent-3);
+    font-weight: 600;
+    margin-right: 0.25rem;
 }
 
 .message-timestamp {

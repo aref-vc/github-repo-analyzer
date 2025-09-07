@@ -735,9 +735,16 @@ class RepositoryAnalyzer {
         const messageElement = document.createElement('div');
         messageElement.className = `chat-message ${sender}`;
         
-        const messageContent = document.createElement('p');
+        const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
-        messageContent.textContent = message;
+        
+        // Debug: Log the raw message
+        console.log('Raw message:', message);
+        
+        // Parse and set content
+        const parsedContent = this.parseMarkdown(message);
+        console.log('Parsed content:', parsedContent);
+        messageContent.innerHTML = parsedContent;
         
         const timestamp = document.createElement('div');
         timestamp.className = 'message-timestamp';
@@ -752,6 +759,187 @@ class RepositoryAnalyzer {
 
         // Store in history
         this.chatHistory.push({ sender, message, timestamp: new Date().toISOString() });
+    }
+
+    /**
+     * Comprehensive markdown parser for chat messages
+     */
+    parseMarkdown(text) {
+        if (!text) return '';
+        
+        // Escape HTML first to prevent XSS
+        const escapeHtml = (str) => {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        };
+        
+        let html = escapeHtml(text);
+        
+        // Process code blocks first (to protect their content)
+        const codeBlocks = [];
+        html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
+            const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
+            codeBlocks.push(`<pre><code>${code.trim()}</code></pre>`);
+            return placeholder;
+        });
+        
+        // Process inline code (to protect from other formatting)
+        const inlineCode = [];
+        html = html.replace(/`([^`]+)`/g, (match, code) => {
+            const placeholder = `__INLINE_CODE_${inlineCode.length}__`;
+            inlineCode.push(`<code>${code}</code>`);
+            return placeholder;
+        });
+        
+        // Headers (must be at start of line)
+        html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+        html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+        html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+        
+        // Bold text (handle both ** and __)
+        html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+        
+        // Italic text (handle both * and _)
+        // Be careful not to match list items
+        html = html.replace(/\b_([^_\n]+)_\b/g, '<em>$1</em>');
+        html = html.replace(/(?<=\s|^)\*(?!\s)([^*\n]+?)(?<!\s)\*(?=\s|$)/g, '<em>$1</em>');
+        
+        // Strikethrough
+        html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+        
+        // Links [text](url)
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        
+        // Horizontal rules
+        html = html.replace(/^---+$/gm, '<hr>');
+        html = html.replace(/^\*\*\*+$/gm, '<hr>');
+        
+        // Process lists and paragraphs
+        const lines = html.split('\n');
+        const result = [];
+        let currentList = null;
+        let currentListType = null;
+        let currentParagraph = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const trimmedLine = line.trim();
+            
+            // Check for unordered list items
+            const bulletMatch = line.match(/^(\s*)[\*\-\+]\s+(.+)$/);
+            // Check for ordered list items  
+            const numberMatch = line.match(/^(\s*)\d+\.\s+(.+)$/);
+            
+            if (bulletMatch) {
+                // Handle unordered list
+                if (currentParagraph.length > 0) {
+                    result.push(`<p>${currentParagraph.join('<br>')}</p>`);
+                    currentParagraph = [];
+                }
+                
+                if (currentListType !== 'ul') {
+                    if (currentList) {
+                        result.push(`</${currentListType}>`);
+                    }
+                    result.push('<ul>');
+                    currentListType = 'ul';
+                    currentList = true;
+                }
+                
+                const indent = bulletMatch[1].length;
+                const content = bulletMatch[2];
+                if (indent > 0) {
+                    result.push(`<li style="margin-left: ${indent * 20}px">${content}</li>`);
+                } else {
+                    result.push(`<li>${content}</li>`);
+                }
+            } else if (numberMatch) {
+                // Handle ordered list
+                if (currentParagraph.length > 0) {
+                    result.push(`<p>${currentParagraph.join('<br>')}</p>`);
+                    currentParagraph = [];
+                }
+                
+                if (currentListType !== 'ol') {
+                    if (currentList) {
+                        result.push(`</${currentListType}>`);
+                    }
+                    result.push('<ol>');
+                    currentListType = 'ol';
+                    currentList = true;
+                }
+                
+                const indent = numberMatch[1].length;
+                const content = numberMatch[2];
+                if (indent > 0) {
+                    result.push(`<li style="margin-left: ${indent * 20}px">${content}</li>`);
+                } else {
+                    result.push(`<li>${content}</li>`);
+                }
+            } else if (trimmedLine === '' || trimmedLine.startsWith('<h') || trimmedLine === '<hr>') {
+                // Empty line or special element - close current list/paragraph
+                if (currentList) {
+                    result.push(`</${currentListType}>`);
+                    currentList = null;
+                    currentListType = null;
+                }
+                if (currentParagraph.length > 0) {
+                    result.push(`<p>${currentParagraph.join('<br>')}</p>`);
+                    currentParagraph = [];
+                }
+                if (trimmedLine.startsWith('<h') || trimmedLine === '<hr>') {
+                    result.push(trimmedLine);
+                }
+            } else if (trimmedLine.startsWith('__CODE_BLOCK_') || trimmedLine.startsWith('<')) {
+                // Special placeholders or HTML - add directly
+                if (currentList) {
+                    result.push(`</${currentListType}>`);
+                    currentList = null;
+                    currentListType = null;
+                }
+                if (currentParagraph.length > 0) {
+                    result.push(`<p>${currentParagraph.join('<br>')}</p>`);
+                    currentParagraph = [];
+                }
+                result.push(trimmedLine);
+            } else {
+                // Regular text line
+                if (currentList) {
+                    result.push(`</${currentListType}>`);
+                    currentList = null;
+                    currentListType = null;
+                }
+                currentParagraph.push(trimmedLine);
+            }
+        }
+        
+        // Close any remaining list or paragraph
+        if (currentList) {
+            result.push(`</${currentListType}>`);
+        }
+        if (currentParagraph.length > 0) {
+            result.push(`<p>${currentParagraph.join('<br>')}</p>`);
+        }
+        
+        // Join everything
+        html = result.join('\n');
+        
+        // Restore code blocks
+        codeBlocks.forEach((block, i) => {
+            html = html.replace(`__CODE_BLOCK_${i}__`, block);
+        });
+        
+        // Restore inline code
+        inlineCode.forEach((code, i) => {
+            html = html.replace(`__INLINE_CODE_${i}__`, code);
+        });
+        
+        // Blockquotes
+        html = html.replace(/^&gt;\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+        
+        return html;
     }
 
     /**
