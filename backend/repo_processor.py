@@ -109,7 +109,7 @@ class RepoProcessor:
             "commit_frequency": self._calculate_commit_frequency(repo_info),
             "contributor_count": len(contributors),
             "license_type": repo_info.get("license", {}).get("name") if repo_info.get("license") else "No License",
-            "dependency_count": "TBD - Calculated in architecture",
+            "dependency_count": "Analyzed in Architecture Synopsis",
             "latest_release": repo_info.get("default_branch", "main"),
             "created_date": repo_info.get("created_at"),
             "last_updated": repo_info.get("updated_at"),
@@ -304,6 +304,29 @@ class RepoProcessor:
         base["data_flow_analysis"] = f"Repository structure: {tree_analysis.get('total_dirs', 0)} directories, {tree_analysis.get('total_files', 0)} files, max depth: {tree_analysis.get('max_depth', 0)}"
         base["scalability_assessment"] = f"Modular structure with {len(tree_analysis.get('directory_structure', {}))} modules"
         base["performance_considerations"] = f"Dependencies: {deep_deps.get('total_count', 0)} total packages across {len(deep_deps.get('package_managers', []))} package managers"
+        
+        # Replace the TBD directory_structure with actual data
+        dir_struct = tree_analysis.get('directory_structure', {})
+        if dir_struct:
+            # Get top-level directories
+            top_dirs = set()
+            for path in dir_struct.keys():
+                parts = path.split('/')
+                if parts[0]:
+                    top_dirs.add(parts[0])
+            
+            # Build directory summary
+            dir_summary = f"{tree_analysis.get('total_files', 0)} files in {tree_analysis.get('total_dirs', 0)} directories"
+            if top_dirs:
+                dir_summary += f" | Main folders: {', '.join(sorted(list(top_dirs)[:10]))}"
+            
+            base["directory_structure"] = dir_summary
+        else:
+            base["directory_structure"] = f"{tree_analysis.get('total_files', 0)} files, {tree_analysis.get('total_dirs', 0)} directories"
+        
+        # Replace the deployment_pipeline TBD if we have CI/CD info
+        if deep_deps.get('package_managers'):
+            base["deployment_pipeline"] = f"Detected: {', '.join(deep_deps['package_managers'])}"
         
         # Add file type distribution
         file_types = tree_analysis.get("file_types", {})
