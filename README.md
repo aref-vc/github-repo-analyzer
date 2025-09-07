@@ -2,10 +2,28 @@
 
 A powerful web application that provides deep, structured intelligence analysis of GitHub repositories. Transform any GitHub repository URL into comprehensive insights with AI-powered chat capabilities.
 
-![Version](https://img.shields.io/badge/version-1.0-blue)
+![Version](https://img.shields.io/badge/version-3.2-blue)
 ![Python](https://img.shields.io/badge/python-3.8+-green)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-red)
 ![License](https://img.shields.io/badge/license-MIT-purple)
+
+## 🎉 What's New in v3.2
+
+### 📊 Advanced Visualization Suite
+- **Interactive Dependency Graph**: D3.js force-directed graph showing package relationships
+- **Code Complexity Heatmap**: Visual representation of file complexity across the repository
+- **Contribution Timeline**: Interactive line chart showing commit patterns over time
+- **Language Distribution**: Beautiful donut chart with language percentages
+- **File Size Treemap**: D3.js treemap showing relative file sizes
+- **Activity Calendar**: GitHub-style contribution heatmap
+- **Issue/PR Trends**: Line chart tracking open issues and PRs over time
+- **Commit Hour Distribution**: Bar chart showing peak development hours
+
+### 🎨 Enhanced UI/UX
+- **Tabbed Interface**: Organized content into Analysis, Visualizations, and AI Assistant tabs
+- **Improved Navigation**: Cleaner separation of concerns with tab-based navigation
+- **Lazy Loading**: Visualizations render only when needed for better performance
+- **Smooth Transitions**: Elegant tab switching animations
 
 ## ✨ Features
 
@@ -122,9 +140,10 @@ github-repo-analyzer/
 │   ├── cache.py              # Caching system
 │   └── export_handler.py     # Export functionality
 ├── frontend/
-│   ├── index.html            # Main UI
-│   ├── app.js                # Frontend logic
-│   └── styles.css            # Styling
+│   ├── index.html            # Main UI with tabbed interface
+│   ├── app.js                # Frontend logic & tab controller
+│   ├── visualizations.js     # Advanced visualization suite
+│   └── styles.css            # Glassmorphism styling
 └── tests/
     └── test_*.py             # Test suites
 ```

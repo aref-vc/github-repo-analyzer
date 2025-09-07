@@ -12,7 +12,12 @@ The GitHub Repository Analyzer is a full-stack web application that provides com
 │  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  │
 │  │  index.html │  │    app.js    │  │   styles.css     │  │
 │  │  (UI Shell) │  │ (Controller) │  │  (Presentation)  │  │
+│  │   Tabbed UI │  │ Tab Manager  │  │  Glassmorphism   │  │
 │  └─────────────┘  └──────────────┘  └──────────────────┘  │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │           visualizations.js (Visualization Suite)      │ │
+│  │  Chart.js & D3.js powered interactive visualizations   │ │
+│  └────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -63,28 +68,50 @@ The GitHub Repository Analyzer is a full-stack web application that provides com
 ### Frontend Layer
 
 #### index.html
-- **Purpose**: Main UI shell and structure
+- **Purpose**: Main UI shell with tabbed interface
 - **Responsibilities**: 
-  - Layout definition
+  - Tabbed layout (Analysis, Visualizations, AI Assistant)
   - Component containers
   - User input forms
+  - Tab navigation structure
 
 #### app.js
-- **Purpose**: Frontend controller and logic
+- **Purpose**: Frontend controller with tab management
 - **Responsibilities**:
   - API communication
   - DOM manipulation
+  - Tab switching logic
   - Event handling
   - State management
   - Export functionality
+  - Lazy loading visualizations
 
 #### styles.css
-- **Purpose**: Visual presentation
+- **Purpose**: Visual presentation with glassmorphism
 - **Responsibilities**:
+  - Dark theme (#211D49 background)
+  - Glassmorphism effects
+  - Tab navigation styling
   - Responsive design
-  - Theme and colors
-  - Animations
+  - Smooth transitions
   - Component styling
+
+#### visualizations.js (New in v3.2)
+- **Purpose**: Advanced data visualization suite
+- **Responsibilities**:
+  - Dependency graph (D3.js force-directed)
+  - Code complexity heatmap
+  - Contribution timeline (Chart.js line)
+  - Language distribution (Chart.js donut)
+  - File size treemap (D3.js)
+  - Activity calendar heatmap
+  - Issue/PR trends
+  - Commit hour distribution
+- **Key Features**:
+  - Lazy loading on tab activation
+  - Responsive chart sizing
+  - Interactive tooltips
+  - Dark theme optimized colors
 
 ### Backend Layer
 
@@ -235,11 +262,12 @@ The GitHub Repository Analyzer is a full-stack web application that provides com
 - **google-generativeai**: Gemini integration
 
 ### Frontend
-- **HTML5**: Structure
-- **CSS3**: Styling
-- **JavaScript (ES6+)**: Logic
+- **HTML5**: Structure with semantic tabs
+- **CSS3**: Glassmorphism styling
+- **JavaScript (ES6+)**: Logic & tab controller
 - **Fetch API**: HTTP requests
-- **Chart.js**: Visualizations
+- **Chart.js v4.4.0**: Standard visualizations
+- **D3.js v7**: Advanced visualizations
 
 ### Development Tools
 - **Git**: Version control
@@ -319,4 +347,4 @@ Load Balancer
 
 ---
 
-*Last Updated: Version 1.0*
+*Last Updated: Version 3.2.0*
