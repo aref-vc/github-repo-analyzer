@@ -219,6 +219,23 @@ class RepoProcessor:
         open_issues = [i for i in issues if i.get("state") == "open" and not i.get("pull_request")]
         open_prs = [pr for pr in pull_requests if pr.get("state") == "open"]
         
+        # Prepare commit history for visualizations
+        commit_history = []
+        for commit in commits[:100]:  # Get last 100 commits for better visualization
+            if commit.get("commit") and commit["commit"].get("author"):
+                commit_history.append({
+                    "sha": commit.get("sha", ""),
+                    "message": commit["commit"].get("message", ""),
+                    "date": commit["commit"]["author"].get("date", ""),
+                    "author": commit.get("author", {}).get("login") if commit.get("author") else "Unknown"
+                })
+        
+        # Calculate commit patterns by day of week
+        commit_by_day = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
+        for date in commit_dates:
+            day_name = date.strftime("%A")
+            commit_by_day[day_name] = commit_by_day.get(day_name, 0) + 1
+        
         return {
             "recent_commit_patterns": f"{len(recent_commits)} commits in last 30",
             "commit_frequency_per_day": round(commit_frequency, 2),
@@ -228,7 +245,24 @@ class RepoProcessor:
             "pull_request_velocity": "TBD - Requires temporal analysis",
             "contributor_activity": f"{len(set([c['author']['login'] for c in recent_commits if c.get('author')]))} active contributors",
             "breaking_changes": "TBD - Requires changelog analysis",
-            "latest_release": releases[0] if releases else None
+            "latest_release": releases[0] if releases else None,
+            # Add raw data for visualizations
+            "commit_history": commit_history,
+            "commit_patterns": {
+                "by_day_of_week": commit_by_day,
+                "total_commits": len(commits)
+            },
+            "issues_data": {
+                "open": len(open_issues),
+                "closed": len([i for i in issues if i.get("state") == "closed" and not i.get("pull_request")]),
+                "total": len([i for i in issues if not i.get("pull_request")])
+            },
+            "prs_data": {
+                "open": len(open_prs),
+                "closed": len([pr for pr in pull_requests if pr.get("state") == "closed"]),
+                "merged": len([pr for pr in pull_requests if pr.get("merged_at")]),
+                "total": len(pull_requests)
+            }
         }
     
     def _process_technical_debt(self, repo_info: Dict, languages: Dict, dependencies: Dict) -> Dict[str, Any]:
@@ -337,6 +371,27 @@ class RepoProcessor:
             else:
                 top_types = dict(Counter(file_types).most_common(5))
             base["primary_technologies"] = ", ".join([f"{ext}: {count} files" for ext, count in top_types.items()])
+        
+        # Add raw data for visualizations
+        base["file_tree"] = {
+            "directories": dict(sorted(dir_struct.items(), key=lambda x: -len(x[1]))[:20]) if dir_struct else {},
+            "files": tree_analysis.get("test_files", [])[:50] + tree_analysis.get("config_files", [])[:50],
+            "total_files": tree_analysis.get("total_files", 0),
+            "total_dirs": tree_analysis.get("total_dirs", 0),
+            "file_types": dict(file_types.most_common(10)) if isinstance(file_types, Counter) else file_types
+        }
+        
+        # Add dependencies object for visualizations
+        base["dependencies"] = {
+            "core": base.get("core_dependencies", []),
+            "dev": base.get("dev_dependencies", []),
+            "total_count": deep_deps.get("total_count", 0),
+            "by_type": {
+                "production": len(base.get("core_dependencies", [])),
+                "development": len(base.get("dev_dependencies", []))
+            },
+            "package_managers": deep_deps.get("package_managers", [])
+        }
         
         return base
     
