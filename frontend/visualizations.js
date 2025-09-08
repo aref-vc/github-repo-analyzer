@@ -1,6 +1,7 @@
 /**
  * Advanced Visualization Suite for GitHub Repository Analyzer
  * Provides interactive charts and graphs for repository data
+ * All data is pulled from actual repository analysis - no mock data
  */
 
 class VisualizationSuite {
@@ -32,13 +33,13 @@ class VisualizationSuite {
         // Create visualization containers
         this.createVisualizationContainers();
         
-        // Initialize each visualization
+        // Initialize each visualization with real data
         this.createLanguageDistributionChart(analysisData.repository_metadata);
         this.createContributionTimeline(analysisData.development_activity);
         this.createActivityCalendar(analysisData.development_activity);
         this.createFileSizeTreemap(analysisData.architecture_synopsis);
         this.createDependencyGraph(analysisData.architecture_synopsis);
-        this.createCodeComplexityHeatmap(analysisData.technical_debt_assessment);
+        this.createCodeComplexityHeatmap(analysisData);
         this.createCommitFrequencyChart(analysisData.development_activity);
         this.createIssuesPRChart(analysisData.development_activity);
     }
@@ -65,7 +66,7 @@ class VisualizationSuite {
                     
                     <!-- Contribution Timeline -->
                     <div class="viz-card viz-full-width">
-                        <h3 class="viz-title">Contribution Timeline</h3>
+                        <h3 class="viz-title">Commit Activity Timeline</h3>
                         <div class="chart-container">
                             <canvas id="contributionTimeline"></canvas>
                         </div>
@@ -73,13 +74,13 @@ class VisualizationSuite {
                     
                     <!-- Activity Calendar -->
                     <div class="viz-card viz-full-width">
-                        <h3 class="viz-title">Activity Heatmap</h3>
+                        <h3 class="viz-title">Development Activity Heatmap</h3>
                         <div id="activityCalendar" class="calendar-container"></div>
                     </div>
                     
                     <!-- Commit Frequency -->
                     <div class="viz-card">
-                        <h3 class="viz-title">Commit Frequency</h3>
+                        <h3 class="viz-title">Commit Patterns by Day</h3>
                         <div class="chart-container">
                             <canvas id="commitFrequency"></canvas>
                         </div>
@@ -95,7 +96,7 @@ class VisualizationSuite {
                     
                     <!-- File Size Treemap -->
                     <div class="viz-card viz-full-width">
-                        <h3 class="viz-title">Repository Structure</h3>
+                        <h3 class="viz-title">Repository File Structure</h3>
                         <div id="fileSizeTreemap" class="treemap-container"></div>
                     </div>
                     
@@ -107,7 +108,7 @@ class VisualizationSuite {
                     
                     <!-- Code Complexity Heatmap -->
                     <div class="viz-card viz-full-width">
-                        <h3 class="viz-title">Technical Debt Heatmap</h3>
+                        <h3 class="viz-title">Code Quality Metrics</h3>
                         <div id="complexityHeatmap" class="heatmap-container"></div>
                     </div>
                 </div>
@@ -128,7 +129,7 @@ class VisualizationSuite {
     }
 
     /**
-     * Create language distribution donut chart
+     * Create language distribution donut chart (USES REAL DATA)
      */
     createLanguageDistributionChart(metadata) {
         const ctx = document.getElementById('languageChart');
@@ -173,24 +174,43 @@ class VisualizationSuite {
     }
 
     /**
-     * Create contribution timeline line chart
+     * Create contribution timeline using real commit history
      */
     createContributionTimeline(activity) {
         const ctx = document.getElementById('contributionTimeline');
         if (!ctx) return;
         
-        // Generate sample timeline data (in real app, this would come from commits)
-        const last30Days = Array.from({length: 30}, (_, i) => {
-            const date = new Date();
-            date.setDate(date.getDate() - (29 - i));
-            return date.toISOString().split('T')[0];
-        });
+        // Use real commit history data if available
+        let timelineData = [];
+        let labels = [];
+        
+        if (activity.commit_history && activity.commit_history.length > 0) {
+            // Group commits by date
+            const commitsByDate = {};
+            activity.commit_history.forEach(commit => {
+                const date = commit.date ? commit.date.split('T')[0] : 'Unknown';
+                commitsByDate[date] = (commitsByDate[date] || 0) + 1;
+            });
+            
+            // Sort dates and create timeline
+            const sortedDates = Object.keys(commitsByDate).sort();
+            labels = sortedDates.slice(-30); // Last 30 dates with commits
+            timelineData = labels.map(date => commitsByDate[date] || 0);
+        } else if (activity.commit_patterns) {
+            // Fallback to commit patterns if available
+            labels = Object.keys(activity.commit_patterns.by_month || {});
+            timelineData = Object.values(activity.commit_patterns.by_month || {});
+        } else {
+            // If no commit data available, show message
+            labels = ['No commit data available'];
+            timelineData = [0];
+        }
         
         const data = {
-            labels: last30Days,
+            labels: labels,
             datasets: [{
                 label: 'Commits',
-                data: last30Days.map(() => Math.floor(Math.random() * 15)),
+                data: timelineData,
                 borderColor: this.colors.primary,
                 backgroundColor: this.colors.primary + '20',
                 tension: 0.4,
@@ -229,7 +249,8 @@ class VisualizationSuite {
                             color: this.colors.dark + '20'
                         },
                         ticks: {
-                            color: this.colors.light
+                            color: this.colors.light,
+                            stepSize: 1
                         }
                     }
                 }
@@ -238,11 +259,24 @@ class VisualizationSuite {
     }
 
     /**
-     * Create activity calendar heatmap
+     * Create activity calendar using real development metrics
      */
     createActivityCalendar(activity) {
         const container = document.getElementById('activityCalendar');
         if (!container) return;
+        
+        // Create activity intensity map from real data
+        const activityMap = new Map();
+        
+        if (activity.commit_history && activity.commit_history.length > 0) {
+            // Map actual commit activity
+            activity.commit_history.forEach(commit => {
+                if (commit.date) {
+                    const date = commit.date.split('T')[0];
+                    activityMap.set(date, (activityMap.get(date) || 0) + 1);
+                }
+            });
+        }
         
         // Create GitHub-style contribution calendar
         const weeks = 52;
@@ -257,33 +291,80 @@ class VisualizationSuite {
         });
         calendarHTML += '</div>';
         
-        // Calendar grid
+        // Calendar grid with real activity data
         calendarHTML += '<div class="calendar-weeks">';
-        for (let week = 0; week < weeks; week++) {
+        const today = new Date();
+        
+        for (let week = 51; week >= 0; week--) {
             calendarHTML += '<div class="calendar-week">';
             for (let day = 0; day < days; day++) {
-                const intensity = Math.floor(Math.random() * 5);
-                calendarHTML += `<div class="calendar-day" data-intensity="${intensity}" title="Commits: ${intensity * 3}"></div>`;
+                const date = new Date(today);
+                date.setDate(date.getDate() - (week * 7 + (6 - day)));
+                const dateStr = date.toISOString().split('T')[0];
+                const commits = activityMap.get(dateStr) || 0;
+                
+                // Calculate intensity (0-4 scale)
+                let intensity = 0;
+                if (commits > 0) intensity = 1;
+                if (commits > 2) intensity = 2;
+                if (commits > 5) intensity = 3;
+                if (commits > 10) intensity = 4;
+                
+                calendarHTML += `<div class="calendar-day" data-intensity="${intensity}" title="${dateStr}: ${commits} commits"></div>`;
             }
             calendarHTML += '</div>';
         }
         calendarHTML += '</div></div>';
         
+        // Add legend
+        calendarHTML += '<div class="calendar-legend">Less <div class="legend-scale">';
+        for (let i = 0; i <= 4; i++) {
+            calendarHTML += `<div class="calendar-day" data-intensity="${i}"></div>`;
+        }
+        calendarHTML += '</div> More</div>';
+        
         container.innerHTML = calendarHTML;
     }
 
     /**
-     * Create commit frequency bar chart
+     * Create commit frequency chart using real patterns
      */
     createCommitFrequencyChart(activity) {
         const ctx = document.getElementById('commitFrequency');
         if (!ctx) return;
         
+        // Use real commit patterns by day of week
+        let dayData = [0, 0, 0, 0, 0, 0, 0]; // Sun-Sat
+        
+        if (activity.commit_patterns && activity.commit_patterns.by_day_of_week) {
+            // Use provided day of week data
+            const dayMapping = {
+                'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3,
+                'Thursday': 4, 'Friday': 5, 'Saturday': 6
+            };
+            
+            Object.entries(activity.commit_patterns.by_day_of_week).forEach(([day, count]) => {
+                const dayIndex = dayMapping[day];
+                if (dayIndex !== undefined) {
+                    dayData[dayIndex] = count;
+                }
+            });
+        } else if (activity.commit_history && activity.commit_history.length > 0) {
+            // Calculate from commit history
+            activity.commit_history.forEach(commit => {
+                if (commit.date) {
+                    const date = new Date(commit.date);
+                    const dayOfWeek = date.getDay();
+                    dayData[dayOfWeek]++;
+                }
+            });
+        }
+        
         const data = {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             datasets: [{
                 label: 'Commits by Day',
-                data: [12, 19, 15, 25, 22, 8, 5],
+                data: dayData,
                 backgroundColor: this.colors.primary,
                 borderColor: this.colors.primary,
                 borderWidth: 1
@@ -308,7 +389,8 @@ class VisualizationSuite {
                             color: this.colors.dark + '20'
                         },
                         ticks: {
-                            color: this.colors.light
+                            color: this.colors.light,
+                            stepSize: 1
                         }
                     },
                     x: {
@@ -325,7 +407,7 @@ class VisualizationSuite {
     }
 
     /**
-     * Create issues and pull requests comparison chart
+     * Create issues and pull requests chart (USES REAL DATA)
      */
     createIssuesPRChart(activity) {
         const ctx = document.getElementById('issuesPRChart');
@@ -358,6 +440,13 @@ class VisualizationSuite {
                             padding: 15,
                             font: { size: 12 }
                         }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                return `${context.label}: ${context.parsed}`;
+                            }
+                        }
                     }
                 }
             }
@@ -365,43 +454,62 @@ class VisualizationSuite {
     }
 
     /**
-     * Create file size treemap using D3.js
+     * Create file size treemap using real file tree data
      */
     createFileSizeTreemap(architecture) {
         const container = document.getElementById('fileSizeTreemap');
-        if (!container) return;
+        if (!container || !architecture.file_tree) return;
         
-        // Sample treemap data structure
-        const data = {
-            name: "root",
-            children: [
-                {
-                    name: "backend",
-                    children: [
-                        { name: "app.py", value: 250 },
-                        { name: "repo_processor.py", value: 450 },
-                        { name: "deep_analyzer.py", value: 320 },
-                        { name: "github_analyzer.py", value: 280 }
-                    ]
-                },
-                {
-                    name: "frontend",
-                    children: [
-                        { name: "index.html", value: 180 },
-                        { name: "app.js", value: 520 },
-                        { name: "styles.css", value: 380 },
-                        { name: "visualizations.js", value: 420 }
-                    ]
-                },
-                {
-                    name: "docs",
-                    children: [
-                        { name: "README.md", value: 150 },
-                        { name: "ARCHITECTURE.md", value: 200 }
-                    ]
+        // Convert file tree to hierarchical structure for treemap
+        const convertToTreemap = (tree, name = 'root') => {
+            if (!tree || typeof tree !== 'object') return null;
+            
+            const children = [];
+            let totalSize = 0;
+            
+            Object.entries(tree).forEach(([key, value]) => {
+                if (typeof value === 'object' && !value.type) {
+                    // It's a directory
+                    const child = convertToTreemap(value, key);
+                    if (child) children.push(child);
+                } else if (value.type === 'file') {
+                    // It's a file - use lines of code or size as value
+                    const fileSize = value.lines || value.size || 100;
+                    children.push({
+                        name: key,
+                        value: fileSize
+                    });
+                    totalSize += fileSize;
                 }
-            ]
+            });
+            
+            if (children.length === 0 && name === 'root') {
+                // If no detailed file tree, use file type distribution
+                if (architecture.file_type_distribution) {
+                    Object.entries(architecture.file_type_distribution).forEach(([type, count]) => {
+                        children.push({
+                            name: type,
+                            value: count * 50 // Approximate size
+                        });
+                    });
+                }
+            }
+            
+            return children.length > 0 ? { name, children } : null;
         };
+        
+        const data = convertToTreemap(architecture.file_tree) || {
+            name: 'Repository',
+            children: Object.entries(architecture.file_type_distribution || {}).map(([type, count]) => ({
+                name: `${type} files (${count})`,
+                value: count * 100
+            }))
+        };
+        
+        if (!data.children || data.children.length === 0) {
+            container.innerHTML = '<div style="padding: 20px; color: #999;">No file structure data available</div>';
+            return;
+        }
         
         const width = container.offsetWidth;
         const height = 400;
@@ -418,7 +526,8 @@ class VisualizationSuite {
         
         treemap(root);
         
-        // Create SVG
+        // Clear container and create SVG
+        d3.select(container).selectAll('*').remove();
         const svg = d3.select(container)
             .append('svg')
             .attr('width', width)
@@ -443,42 +552,71 @@ class VisualizationSuite {
         cell.append('text')
             .attr('x', 4)
             .attr('y', 20)
-            .text(d => d.data.name)
+            .text(d => {
+                const width = d.x1 - d.x0;
+                const name = d.data.name;
+                return width > 50 ? name : ''; // Only show label if enough space
+            })
             .attr('fill', 'white')
             .style('font-size', '11px');
     }
 
     /**
-     * Create dependency graph network visualization
+     * Create dependency graph using real dependency data
      */
     createDependencyGraph(architecture) {
         const container = document.getElementById('dependencyGraph');
         if (!container) return;
         
-        // Sample dependency data
-        const nodes = [
-            { id: 'app', label: 'Application', group: 1 },
-            { id: 'fastapi', label: 'FastAPI', group: 2 },
-            { id: 'uvicorn', label: 'Uvicorn', group: 2 },
-            { id: 'httpx', label: 'httpx', group: 2 },
-            { id: 'pydantic', label: 'Pydantic', group: 2 },
-            { id: 'github', label: 'GitHub API', group: 3 },
-            { id: 'gemini', label: 'Gemini AI', group: 3 }
-        ];
+        // Extract real dependencies from architecture data
+        const nodes = [];
+        const links = [];
+        const nodeMap = new Map();
         
-        const links = [
-            { source: 'app', target: 'fastapi', value: 1 },
-            { source: 'app', target: 'uvicorn', value: 1 },
-            { source: 'app', target: 'httpx', value: 1 },
-            { source: 'app', target: 'pydantic', value: 1 },
-            { source: 'httpx', target: 'github', value: 1 },
-            { source: 'app', target: 'gemini', value: 1 }
-        ];
+        // Add main application node
+        nodes.push({ id: 'app', label: 'Application', group: 1 });
+        nodeMap.set('app', true);
+        
+        // Process dependencies from different package managers
+        const addDependencies = (deps, group) => {
+            if (!deps) return;
+            
+            Object.keys(deps).forEach(dep => {
+                if (!nodeMap.has(dep)) {
+                    nodes.push({ id: dep, label: dep, group });
+                    nodeMap.set(dep, true);
+                    links.push({ source: 'app', target: dep, value: 1 });
+                }
+            });
+        };
+        
+        // Add dependencies from various sources
+        if (architecture.dependencies) {
+            // npm dependencies
+            addDependencies(architecture.dependencies.npm?.dependencies, 2);
+            addDependencies(architecture.dependencies.npm?.devDependencies, 3);
+            
+            // Python dependencies
+            addDependencies(architecture.dependencies.pip?.dependencies, 2);
+            addDependencies(architecture.dependencies.pip?.devDependencies, 3);
+            
+            // Other package managers
+            addDependencies(architecture.dependencies.cargo?.dependencies, 2);
+            addDependencies(architecture.dependencies.maven?.dependencies, 2);
+            addDependencies(architecture.dependencies.gradle?.dependencies, 2);
+        }
+        
+        // If no dependencies found, show a message
+        if (nodes.length === 1) {
+            container.innerHTML = '<div style="padding: 20px; color: #999;">No dependency data available</div>';
+            return;
+        }
         
         const width = container.offsetWidth;
         const height = 400;
         
-        // Create SVG
+        // Clear container and create SVG
+        d3.select(container).selectAll('*').remove();
         const svg = d3.select(container)
             .append('svg')
             .attr('width', width)
@@ -503,7 +641,7 @@ class VisualizationSuite {
             .selectAll('circle')
             .data(nodes)
             .enter().append('circle')
-            .attr('r', 20)
+            .attr('r', d => d.id === 'app' ? 25 : 15)
             .attr('fill', d => this.colors.chartColors[d.group])
             .attr('stroke', this.colors.dark)
             .attr('stroke-width', 2)
@@ -518,7 +656,7 @@ class VisualizationSuite {
             .data(nodes)
             .enter().append('text')
             .text(d => d.label)
-            .attr('font-size', 12)
+            .attr('font-size', 11)
             .attr('fill', this.colors.light)
             .attr('text-anchor', 'middle')
             .attr('dy', 4);
@@ -560,38 +698,106 @@ class VisualizationSuite {
     }
 
     /**
-     * Create code complexity heatmap
+     * Create code complexity heatmap using real metrics
      */
-    createCodeComplexityHeatmap(technicalDebt) {
+    createCodeComplexityHeatmap(analysisData) {
         const container = document.getElementById('complexityHeatmap');
         if (!container) return;
         
-        // Sample complexity data
-        const data = [
-            { file: 'repo_processor.py', complexity: 85, lines: 450, issues: 3 },
-            { file: 'deep_analyzer.py', complexity: 72, lines: 320, issues: 2 },
-            { file: 'app.js', complexity: 68, lines: 520, issues: 1 },
-            { file: 'github_analyzer.py', complexity: 45, lines: 280, issues: 0 },
-            { file: 'styles.css', complexity: 20, lines: 380, issues: 0 }
-        ];
+        // Extract real complexity data from analysis
+        const complexityData = [];
+        
+        // Get data from technical debt assessment
+        if (analysisData.technical_debt_assessment) {
+            const debt = analysisData.technical_debt_assessment;
+            
+            // Add code organization metrics
+            if (debt.code_organization) {
+                Object.entries(debt.code_organization).forEach(([key, value]) => {
+                    if (typeof value === 'number') {
+                        complexityData.push({
+                            category: 'Code Organization',
+                            metric: key.replace(/_/g, ' '),
+                            value: value,
+                            severity: value > 70 ? 'high' : value > 40 ? 'medium' : 'low'
+                        });
+                    }
+                });
+            }
+            
+            // Add maintenance metrics
+            if (debt.maintenance_metrics) {
+                Object.entries(debt.maintenance_metrics).forEach(([key, value]) => {
+                    if (typeof value === 'number') {
+                        complexityData.push({
+                            category: 'Maintenance',
+                            metric: key.replace(/_/g, ' '),
+                            value: value,
+                            severity: value > 70 ? 'high' : value > 40 ? 'medium' : 'low'
+                        });
+                    }
+                });
+            }
+        }
+        
+        // Add code quality metrics if available
+        if (analysisData.code_quality_metrics) {
+            const quality = analysisData.code_quality_metrics;
+            
+            if (quality.test_coverage !== undefined) {
+                complexityData.push({
+                    category: 'Quality',
+                    metric: 'Test Coverage',
+                    value: quality.test_coverage,
+                    severity: quality.test_coverage < 30 ? 'high' : quality.test_coverage < 60 ? 'medium' : 'low'
+                });
+            }
+            
+            if (quality.documentation_coverage !== undefined) {
+                complexityData.push({
+                    category: 'Quality',
+                    metric: 'Documentation Coverage',
+                    value: quality.documentation_coverage,
+                    severity: quality.documentation_coverage < 30 ? 'high' : quality.documentation_coverage < 60 ? 'medium' : 'low'
+                });
+            }
+        }
+        
+        // If no complexity data available, show message
+        if (complexityData.length === 0) {
+            container.innerHTML = '<div style="padding: 20px; color: #999;">No code quality metrics available</div>';
+            return;
+        }
         
         // Create heatmap grid
         let heatmapHTML = '<div class="heatmap-grid">';
         
-        data.forEach(item => {
-            const intensity = Math.min(100, item.complexity);
-            const color = this.getHeatmapColor(intensity);
+        // Group data by category
+        const categories = {};
+        complexityData.forEach(item => {
+            if (!categories[item.category]) {
+                categories[item.category] = [];
+            }
+            categories[item.category].push(item);
+        });
+        
+        // Render each category
+        Object.entries(categories).forEach(([category, items]) => {
+            heatmapHTML += `<div class="heatmap-category">
+                <h4 class="category-title">${category}</h4>
+                <div class="heatmap-items">`;
             
-            heatmapHTML += `
-                <div class="heatmap-item" style="background: ${color}">
-                    <div class="heatmap-label">${item.file}</div>
-                    <div class="heatmap-stats">
-                        <span>Complexity: ${item.complexity}</span>
-                        <span>Lines: ${item.lines}</span>
-                        <span>Issues: ${item.issues}</span>
+            items.forEach(item => {
+                const color = this.getHeatmapColor(item.value, item.severity);
+                heatmapHTML += `
+                    <div class="heatmap-item" style="background: ${color}">
+                        <div class="heatmap-label">${item.metric}</div>
+                        <div class="heatmap-value">${item.value}%</div>
                     </div>
-                </div>
-            `;
+                `;
+            });
+            
+            heatmapHTML += '</div></div>';
         });
         
         heatmapHTML += '</div>';
@@ -599,14 +805,19 @@ class VisualizationSuite {
     }
 
     /**
-     * Get color for heatmap based on intensity
+     * Get color for heatmap based on value and severity
      */
-    getHeatmapColor(intensity) {
-        if (intensity < 30) return '#4CAF50';
-        if (intensity < 50) return '#8BC34A';
-        if (intensity < 70) return '#FFC107';
-        if (intensity < 85) return '#FF9800';
-        return '#F44336';
+    getHeatmapColor(value, severity) {
+        if (severity === 'high') return '#F44336';
+        if (severity === 'medium') return '#FF9800';
+        if (severity === 'low') return '#4CAF50';
+        
+        // Fallback to value-based coloring
+        if (value < 30) return '#F44336';
+        if (value < 50) return '#FF9800';
+        if (value < 70) return '#FFC107';
+        if (value < 85) return '#8BC34A';
+        return '#4CAF50';
     }
 
     /**
