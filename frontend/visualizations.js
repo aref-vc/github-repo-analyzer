@@ -474,7 +474,7 @@ class VisualizationSuite {
                     if (child) children.push(child);
                 } else if (value.type === 'file') {
                     // It's a file - use lines of code or size as value
-                    const fileSize = value.lines || value.size || 100;
+                    const fileSize = value.lines || value.size || 1; // Minimal size if unknown
                     children.push({
                         name: key,
                         value: fileSize
@@ -484,12 +484,12 @@ class VisualizationSuite {
             });
             
             if (children.length === 0 && name === 'root') {
-                // If no detailed file tree, use file type distribution
-                if (architecture.file_type_distribution) {
-                    Object.entries(architecture.file_type_distribution).forEach(([type, count]) => {
+                // If no detailed file tree, use file types from file_tree
+                if (architecture.file_tree && architecture.file_tree.file_types) {
+                    Object.entries(architecture.file_tree.file_types).forEach(([type, count]) => {
                         children.push({
-                            name: type,
-                            value: count * 50 // Approximate size
+                            name: `${type} (${count} files)`,
+                            value: count // Use actual file count
                         });
                     });
                 }
@@ -500,9 +500,9 @@ class VisualizationSuite {
         
         const data = convertToTreemap(architecture.file_tree) || {
             name: 'Repository',
-            children: Object.entries(architecture.file_type_distribution || {}).map(([type, count]) => ({
+            children: Object.entries(architecture.file_tree?.file_types || {}).map(([type, count]) => ({
                 name: `${type} files (${count})`,
-                value: count * 100
+                value: count
             }))
         };
         
@@ -592,18 +592,26 @@ class VisualizationSuite {
         
         // Add dependencies from various sources
         if (architecture.dependencies) {
-            // npm dependencies
-            addDependencies(architecture.dependencies.npm?.dependencies, 2);
-            addDependencies(architecture.dependencies.npm?.devDependencies, 3);
+            // Use the actual structure from backend
+            if (architecture.dependencies.core && Array.isArray(architecture.dependencies.core)) {
+                architecture.dependencies.core.forEach(dep => {
+                    if (!nodeMap.has(dep)) {
+                        nodes.push({ id: dep, label: dep, group: 2 });
+                        nodeMap.set(dep, true);
+                        links.push({ source: 'app', target: dep, value: 1 });
+                    }
+                });
+            }
             
-            // Python dependencies
-            addDependencies(architecture.dependencies.pip?.dependencies, 2);
-            addDependencies(architecture.dependencies.pip?.devDependencies, 3);
-            
-            // Other package managers
-            addDependencies(architecture.dependencies.cargo?.dependencies, 2);
-            addDependencies(architecture.dependencies.maven?.dependencies, 2);
-            addDependencies(architecture.dependencies.gradle?.dependencies, 2);
+            if (architecture.dependencies.dev && Array.isArray(architecture.dependencies.dev)) {
+                architecture.dependencies.dev.forEach(dep => {
+                    if (!nodeMap.has(dep)) {
+                        nodes.push({ id: dep, label: dep, group: 3 });
+                        nodeMap.set(dep, true);
+                        links.push({ source: 'app', target: dep, value: 1 });
+                    }
+                });
+            }
         }
         
         // If no dependencies found, show a message
